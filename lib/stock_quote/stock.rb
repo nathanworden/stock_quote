@@ -38,7 +38,7 @@ module StockQuote
         RestClient::Request.execute(:url => u, :method => :get, :verify_ssl => false) do |response|
           if !!(startdate || enddate)
             fail "Invalid Query" if response.body.match(/^<!DOCTYPE html>/)
-            csv = CSV.new(response.body[3..-1], :headers => true, :header_converters => :symbol, :converters => :all)
+            csv = CSV.new(response.body[3..-1], :headers => true, :header_converters => :symbol, :converters => :all, quote_char: "\x00")
             json = {symbol: s, history: csv.to_a.map {|row| row.to_hash }}
             if format == 'json'
               results << json
